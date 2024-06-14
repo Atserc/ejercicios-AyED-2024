@@ -9,15 +9,18 @@ public class NivelArbol {
 	
 	private BinaryTree<Integer> buscarSubArbol(BinaryTree<Integer> a, int n) {
 		BinaryTree<Integer> auxT = new BinaryTree<Integer>();
+		BinaryTree<Integer> minLeaf = null;
 		Queue<BinaryTree<Integer>> cola = new Queue<BinaryTree<Integer>>();
 		int nivel = 1;
+		
+		boolean encontre = false;
 		cola.enqueue(a);
 		cola.enqueue(null);
-		while (!cola.isEmpty()) {
+		while (!cola.isEmpty() && (nivel == n || !encontre)) {
 			auxT = cola.dequeue();
 			if (auxT != null) {
 				if (nivel == n) {
-					return auxT;
+					encontre = true;
 				}
 				if (nivel > n) {
 					return null;
@@ -35,48 +38,27 @@ public class NivelArbol {
 				}
 			}
 		}
-		return null;		
-	}
-	
-	private BinaryTree<Integer> revisar(BinaryTree<Integer> a) {
-		boolean RightExist = a.hasRightChild();
-		boolean LeftExist = a.hasLeftChild();
-		boolean RightIsLeaf = false;
-		boolean LeftIsLeaf = false;
-		if (RightExist) {
-			if (a.getRightChild().isLeaf()) {				
-				RightIsLeaf = true;
+		if (encontre) {
+			while (!cola.isEmpty()) {
+				auxT = cola.dequeue();
+				if (auxT.isLeaf()) {
+					if (minLeaf == null) {
+						minLeaf = auxT;
+					} else {
+						if (auxT.getData() < minLeaf.getData()) {
+							minLeaf = auxT;
+						}
+					}
+				}
 			}
 		}
-		if (LeftExist) {
-			if (a.getLeftChild().isLeaf()) {				
-				LeftIsLeaf = true;
-			}
-		}
-		
-		if (RightIsLeaf && LeftIsLeaf) {
-			if (a.getLeftChild().getData() < a.getRightChild().getData()) {
-				return a.getLeftChild();
-			} else {
-				return a.getRightChild();
-			}
-		} else {
-			if (RightIsLeaf) {
-				return a.getRightChild();
-			} else if (LeftIsLeaf) {
-				return a.getLeftChild();
-			} else {
-				return null;
-			}
-		}
+		return minLeaf;
 	}
 
 	public BinaryTree<Integer> minEnNivelAB(int n) {
 		BinaryTree<Integer> auxT = new BinaryTree<Integer>();
 	
 		auxT = buscarSubArbol(arbol, n);
-		
-		auxT = revisar(auxT);
 		
 		return auxT;
 	}
