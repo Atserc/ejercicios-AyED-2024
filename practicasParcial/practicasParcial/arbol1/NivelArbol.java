@@ -13,15 +13,11 @@ public class NivelArbol {
 		Queue<BinaryTree<Integer>> cola = new Queue<BinaryTree<Integer>>();
 		int nivel = 1;
 		
-		boolean encontre = false;
 		cola.enqueue(a);
 		cola.enqueue(null);
-		while (!cola.isEmpty() && (nivel == n || !encontre)) {
+		while (!cola.isEmpty() && (nivel != n)) {
 			auxT = cola.dequeue();
 			if (auxT != null) {
-				if (nivel == n) {
-					encontre = true;
-				}
 				if (nivel > n) {
 					return null;
 				}
@@ -38,7 +34,7 @@ public class NivelArbol {
 				}
 			}
 		}
-		if (encontre) {
+		if (nivel == n) {
 			while (!cola.isEmpty()) {
 				auxT = cola.dequeue();
 				if (auxT.isLeaf()) {
